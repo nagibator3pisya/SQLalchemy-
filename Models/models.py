@@ -11,7 +11,7 @@ class Person(Base):
     name: Mapped[str] = mapped_column(String(50))
     age: Mapped[int] = mapped_column(Integer)
     peoples: Mapped['Post'] = relationship(back_populates='person')
-
+    profiles: Mapped['Profile'] = relationship('Profile',back_populates='person')
 
 
 
@@ -23,3 +23,14 @@ class Post(Base):
     person_id: Mapped[int] = mapped_column(ForeignKey('people.id'))
 
     person : Mapped['Person'] = relationship(back_populates='peoples')
+
+
+
+class Profile(Base):
+    __tablename__ = "pofile"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    first_name: Mapped[str] = mapped_column(String(40))
+    last_name: Mapped[str] = mapped_column(String(40))
+    bio: Mapped[str]  = mapped_column(String(100))
+    person_id :Mapped[int] = mapped_column(ForeignKey('people.id'))
+    person : Mapped['Person'] = relationship(back_populates='profile')
