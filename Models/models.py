@@ -9,10 +9,15 @@ class Person(Base):
     __tablename__ = "people"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(50))
-    age: Mapped[int] = mapped_column(Integer)
+    age: Mapped[int] = mapped_column(Integer,nullable=True)
     peoples: Mapped['Post'] = relationship(back_populates='person')
-    profiles: Mapped['Profile'] = relationship('Profile',back_populates='person')
+    profile: Mapped['Profile'] = relationship('Profile',back_populates='person', uselist=False)
 
+    def __str__(self):
+        return f'{self.__class__.__name__}(id = {self.id} name = {self.name},age = {self.age})'
+
+    def __repr__(self):
+        return str(self)
 
 
 class Post(Base):
@@ -27,7 +32,7 @@ class Post(Base):
 
 
 class Profile(Base):
-    __tablename__ = "pofile"
+    __tablename__ = "profile"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     first_name: Mapped[str] = mapped_column(String(40))
     last_name: Mapped[str] = mapped_column(String(40))
