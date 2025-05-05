@@ -8,7 +8,7 @@ DATABASE_URL = settings.get_db_url()
 engine = create_async_engine(url=DATABASE_URL)
 
 # Создаем фабрику сессий для взаимодействия с базой данных
-async_session_maker = async_sessionmaker(bind=engine,expire_on_commit=False,future=True,)
+async_session_maker = async_sessionmaker(bind=engine,expire_on_commit=False)
 
 
 class Base(AsyncAttrs, DeclarativeBase):
