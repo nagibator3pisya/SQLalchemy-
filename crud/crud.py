@@ -5,26 +5,38 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from DataBase.DataBase import async_session_maker, engine
 from Models.models import Person,Profile
 
-# cоздать юзера
-async def add_user(name: str, age: int, session: AsyncSession):
-    # Создаём объект User (инстанс модели)
-    new_user = Person(name=name, age=age)
-    # Добавляем объект в сессию
-    session.add(new_user)
-    # Сохраняем изменения в базе данных
+# добавление множества пользователей
+async  def all_add_user(users_data: list[dict],session:AsyncSession):
+    users_list = [
+        Person(
+            name = user_data['name'],
+            age  = user_data['age'],
+        ) for user_data in users_data
+    ]
+    session.add_all(users_list)
     await session.commit()
-    return new_user
+    return [i.id for i in users_list]
+
 
 # cессия
 async def main():
     async with async_session_maker() as session:
         try:
-            user = await add_user('Тестовый4', 14, session=session)
-            # Выводим сообщение об успешном добавлении
-            print(f"Пользователь добавлен: {user.name}, Возраст: {user.age}")
+           user_all =  await all_add_user(
+               [
+                {"name": "michael_brown",'age':12 },
+                {"name": "sarah_wilson", 'age':13 },
+                {"name": "david_clark", 'age': 13  },
+                {"name": "emma_walker", 'age': 14  },
+                {"name": "james_martin",'age': 15   }
+               ],
+               session=session
+           )
+
+           print(user_all)
         except Exception as e:
             # Обрабатываем ошибки
-            print(f"Ошибка при добавлении пользователя: {e}")
+            print(f"{e}")
             # Откатываем транзакцию в случае ошибки
             await session.rollback()
 
