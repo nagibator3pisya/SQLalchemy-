@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from DataBase.DataBase import async_session_maker, engine
 from Models.models import Person,Profile
-
+# вывод профиля + юзера
 async def selest(session: AsyncSession):
     result = await session.execute(select(Person).options(selectinload(Person.profile)))
     return result.scalars().all()
@@ -22,6 +22,8 @@ async def main():
               print(i)
               if i.profile:
                   print(f'Profile: {i.profile}')
+              else:
+                  print('No profile')
         except Exception as e:
             # Обрабатываем ошибки
             print(f"{e}")
