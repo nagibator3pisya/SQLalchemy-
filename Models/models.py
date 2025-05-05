@@ -10,6 +10,7 @@ class Person(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(50))
     age: Mapped[int] = mapped_column(Integer,nullable=True)
+    email: Mapped[str] = mapped_column(String(50),nullable = True)
     peoples: Mapped['Post'] = relationship(back_populates='person')
     profile: Mapped['Profile'] = relationship('Profile',back_populates='person', uselist=False)
 

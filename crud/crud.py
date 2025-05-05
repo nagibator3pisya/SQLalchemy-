@@ -5,35 +5,26 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from DataBase.DataBase import async_session_maker, engine
 from Models.models import Person,Profile
 
-# добавление множества пользователей
-async  def all_add_user(users_data: list[dict],session:AsyncSession):
-    users_list = [
-        Person(
-            name = user_data['name'],
-            age  = user_data['age'],
-        ) for user_data in users_data
-    ]
-    session.add_all(users_list)
+# добавление профиль + юзер
+async def add_profile_and_user(name: str, age: int, email:str,first_name: str,
+                     last_name: str, bio: str, session: AsyncSession):
+    new_user = Person(name=name, age=age,email=email)
+    session.add(new_user)
+    await session.flush()
+
+    profile = Profile(first_name=first_name,last_name=last_name,bio=bio,person_id=new_user.id)
+    session.add(profile)
     await session.commit()
-    return [i.id for i in users_list]
+
+    return {'user_id': new_user.id, 'profile_id': profile.id}
 
 
 # cессия
 async def main():
     async with async_session_maker() as session:
         try:
-           user_all =  await all_add_user(
-               [
-                {"name": "michael_brown",'age':12 },
-                {"name": "sarah_wilson", 'age':13 },
-                {"name": "david_clark", 'age': 13  },
-                {"name": "emma_walker", 'age': 14  },
-                {"name": "james_martin",'age': 15   }
-               ],
-               session=session
-           )
-
-           print(user_all)
+           await add_profile_and_user('Тест_с_емаилом',22,'test@mail.com','эмаил_пользователь',
+                                      'маил пользователь','биотест',session=session)
         except Exception as e:
             # Обрабатываем ошибки
             print(f"{e}")
