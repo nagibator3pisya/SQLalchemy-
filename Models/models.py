@@ -15,7 +15,7 @@ class Person(Base):
     profile: Mapped['Profile'] = relationship('Profile',back_populates='person', uselist=False)
 
     def __str__(self):
-        return f'{self.__class__.__name__}(id = {self.id} name = {self.name},age = {self.age})'
+        return f'{self.__class__.__name__}(id = {self.id} name = {self.name},age = {self.age}, email = {self.email})'
 
     def __repr__(self):
         return str(self)
@@ -40,3 +40,10 @@ class Profile(Base):
     bio: Mapped[str]  = mapped_column(String(100))
     person_id :Mapped[int] = mapped_column(ForeignKey('people.id'))
     person : Mapped['Person'] = relationship(back_populates='profile')
+
+    def __str__(self):
+        return (f'{self.__class__.__name__}(id = {self.id} first_name = {self.first_name},last_name = {self.last_name},'
+                f' bio = {self.bio})')
+
+    def __repr__(self):
+        return str(self)
