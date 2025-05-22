@@ -31,23 +31,45 @@ def connection(method):
 #     return user.id
 
 
-@connection
-async def add_user_and_post(session,name,age,email,title,body):
-    user = Person(name=name,age=age,email=email)
-    session.add(user)
-    await session.commit()
-
-    post = Post(person_id=user.id,title=title,body=body)
-    session.add(post)
-    await session.commit()
-
-
-new_user_and_post = run(add_user_and_post(name='Толя',age=14,
-                                          email='saw@mail.ru',
-                                          title='Название поста',
-                                          body='Описание поста'))
-print(new_user_and_post)
+# @connection
+# async def add_user_and_post(session,name,age,email,title,body):
+#     user = Person(name=name,age=age,email=email)
+#     session.add(user)
+#     await session.flush()
+#
+#     post = Post(person_id=user.id,title=title,body=body)
+#     session.add(post)
+#     await session.commit()
+#
+#
+# new_user_and_post = run(add_user_and_post(name='Толя',age=14,
+#                                           email='saw@mail.ru',
+#                                           title='Название поста',
+#                                           body='Описание поста'))
+# print(new_user_and_post)
 
 # new_user = run(add_user_post(name='Санёк',age=12,email='saw@mail.ru'))
 # print(new_user)
 
+@connection
+async def all_user(session,user_data):
+    user=[
+        Person(
+            name=i['name'],
+            age=i['age'],
+            email=i['email']
+        )
+        for i in user_data
+    ]
+    session.add_all(user)
+    await session.commit()
+    # return [i.id for i in user ]
+
+users_datas = [
+    {'name': 'Толя', 'age': 13, 'email': 'saw@mail.ru'},
+    {'name': 'Маша', 'age': 25, 'email': 'masha@mail.ru'},
+    {'name': 'Петя', 'age': 30, 'email': 'petya@mail.ru'}
+]
+
+all = run(all_user(user_data=users_datas))
+print(all)
